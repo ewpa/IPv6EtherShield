@@ -32,21 +32,25 @@
 
 #include <Arduino.h>
 
-typedef uint32_t clock_time_t;
-static clock_time_t global_system_ticks = 0;
-
-clock_time_t clock_time()
+extern "C"
 {
-    return millis()/32;
-}
+    typedef uint32_t clock_time_t;
+    static clock_time_t global_system_ticks = 0;
+
+    clock_time_t clock_time()
+    {
+        return millis()/32;
+    }
 
 
-unsigned long clock_seconds(void)
-{
-	return (clock_time()/32);
-}
+    unsigned long clock_seconds(void)
+    {
+	    return (clock_time()/32);
+    }
 
-void
-clock_init()
-{
+    void
+    clock_init()
+    {
+    }
+
 }

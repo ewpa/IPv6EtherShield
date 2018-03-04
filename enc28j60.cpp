@@ -13,8 +13,6 @@
  * Title: Microchip ENC28J60 Ethernet Interface Driver
  * Chip type           : ATMEGA88 with ENC28J60
  *********************************************/
-#include <avr/io.h>
-//#include "avr_compat.h"
 #include "enc28j60.h"
 #include "Arduino.h"  //all things wiring / arduino
 //~ #include "arduino-debug.h"
@@ -29,49 +27,52 @@
 #endif
 */
 
+#include "SPI.h"
+
 static uint8_t Enc28j60Bank;
 static uint16_t NextPacketPtr;
 
+#ifndef MCU_STM32F103CB
 #define ENC28J60_CONTROL_CS     10
 #define SPI_MOSI				11
 #define SPI_MISO				12
 #define SPI_SCK					13
+#else
+#define ENC28J60_CONTROL_CS     PA4
+#define SPI_MOSI				PA7
+#define SPI_MISO				PA6
+#define SPI_SCK					PA5
+#endif
 // set CS to 0 = active
 #define CSACTIVE digitalWrite(ENC28J60_CONTROL_CS, LOW)
 // set CS to 1 = passive
 #define CSPASSIVE digitalWrite(ENC28J60_CONTROL_CS, HIGH) 
-//
-#define waitspi() while(!(SPSR&(1<<SPIF)))
 
 uint8_t enc28j60ReadOp(uint8_t op, uint8_t address)
 {
         CSACTIVE;
         // issue read command
-        SPDR = op | (address & ADDR_MASK);
-        waitspi();
+        uint8_t result;
+        SPI.transfer(op | (address & ADDR_MASK));
         // read data
-        SPDR = 0x00;
-        waitspi();
+        result = SPI.transfer(0x00);
         // do dummy read if needed (for mac and mii, see datasheet page 29)
-        if(address & 0x80)
+        if (address & 0x80)
         {
-                SPDR = 0x00;
-                waitspi();
+                result = SPI.transfer(0x00);
         }
         // release CS
         CSPASSIVE;
-        return(SPDR);
+        return result;
 }
 
 void enc28j60WriteOp(uint8_t op, uint8_t address, uint8_t data)
 {
         CSACTIVE;
         // issue write command
-        SPDR = op | (address & ADDR_MASK);
-        waitspi();
+	SPI.transfer(op | (address & ADDR_MASK));
         // write data
-        SPDR = data;
-        waitspi();
+        SPI.transfer(data);
         CSPASSIVE;
 }
 
@@ -79,16 +80,10 @@ void enc28j60ReadBuffer(uint16_t len, uint8_t* data)
 {
         CSACTIVE;
         // issue read command
-        SPDR = ENC28J60_READ_BUF_MEM;
-        waitspi();
-        while(len)
+        SPI.transfer(ENC28J60_READ_BUF_MEM);
+        while (len--)
         {
-                len--;
-                // read data
-                SPDR = 0x00;
-                waitspi();
-                *data = SPDR;
-                data++;
+                *data++ = SPI.transfer(0x00);
         }
         *data='\0';
         CSPASSIVE;
@@ -98,15 +93,10 @@ void enc28j60WriteBuffer(uint16_t len, uint8_t* data)
 {
         CSACTIVE;
         // issue write command
-        SPDR = ENC28J60_WRITE_BUF_MEM;
-        waitspi();
-        while(len)
+        SPI.transfer(ENC28J60_WRITE_BUF_MEM);
+        while (len--)
         {
-                len--;
-                // write data
-                SPDR = *data;
-                data++;
-                waitspi();
+                SPI.transfer(*data++);
         }
         CSPASSIVE;
 }
@@ -185,8 +175,8 @@ void enc28j60Init(uint8_t* macaddr)
 	//
 	// initialize SPI interface
 	// master mode and Fosc/2 clock:
-        SPCR = (1<<SPE)|(1<<MSTR);
-        SPSR |= (1<<SPI2X);
+	SPI.begin();
+	SPI.setBitOrder(MSBFIRST);
 	// perform system reset
 	enc28j60WriteOp(ENC28J60_SOFT_RESET, 0, ENC28J60_SOFT_RESET);
 	delay(50);
