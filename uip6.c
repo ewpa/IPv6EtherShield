@@ -490,7 +490,7 @@ uip_connect(uip_ipaddr_t *ripaddr, u16_t rport)
   conn->sv = 16;   /* Initial value of the RTT variance. */
   conn->lport = htons(lastport);
   conn->rport = rport;
-  // Ewan Parker 10-JUL-2016 Save the first global IP address for matching.
+  // Save the first global IP address for matching.
   uip_ipaddr_copy(&conn->lipaddr, &uip_netif_physical_if.addresses[1].ipaddr);
   uip_ipaddr_copy(&conn->ripaddr, ripaddr);
   
