@@ -194,7 +194,6 @@ void ipv6_ethershield_process_data() {
 }
 
 // Enable the Wake-on-LAN interrupt on receipt of the magic packet.
-// Ewan Parker 20-OCT-2016
 void IPv6EtherShield::enableWoLInterrupt(void) {
     enc28j60Write(ERXFCON, ERXFCON_ANDOR|ERXFCON_CRCEN|ERXFCON_MPEN);
     enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, EIE, EIE_INTIE|EIE_PKTIE);
@@ -202,7 +201,6 @@ void IPv6EtherShield::enableWoLInterrupt(void) {
 }
 
 // Disable the Wake-on-LAN interrupt on receipt of the magic packet.
-// Ewan Parker 20-OCT-2016
 void IPv6EtherShield::disableWoLInterrupt(void) {
     enc28j60Write(ERXFCON, ERXFCON_UCEN|ERXFCON_BCEN|ERXFCON_MCEN);
     enc28j60WriteOp(ENC28J60_BIT_FIELD_CLR, EIE, EIE_INTIE|EIE_PKTIE);
