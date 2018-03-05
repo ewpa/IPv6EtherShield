@@ -1,4 +1,4 @@
-#include <HardwareSerial.h>
+#include <Arduino.h>
 #include "uip.h"
 #include "arduino-debug.h"
 
