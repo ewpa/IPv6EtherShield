@@ -21,7 +21,6 @@
 */
 
 extern "C" {
-	#include "enc28j60.h"
 	#include "uip.h"
 	#include "uip-netif.h"
 	#include "uip-nd6.h"
@@ -29,6 +28,7 @@ extern "C" {
 	#include <string.h>	
 }
 
+#include "enc28j60.h"
 #include "Arduino.h"
 #include "IPv6EtherShield.h"
 #include "arduino-debug.h"
