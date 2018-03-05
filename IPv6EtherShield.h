@@ -38,6 +38,7 @@ class IPv6EtherShield
 	void initENC28J60(uint8_t* macAddress);
     void initTCPIP(uint8_t* macAddress, void (*processingFunction)());
     void addAddress(uint16_t addr0, uint16_t addr1, uint16_t addr2, uint16_t addr3, uint16_t addr4, uint16_t addr5, uint16_t addr6, uint16_t addr7);
+    void removeManualAddresses();
     void receivePacket();    
     uint8_t isIPv6Packet();
     uint8_t getBuffer(uint16_t position);

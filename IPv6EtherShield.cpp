@@ -139,6 +139,15 @@ void IPv6EtherShield::addAddress(uint16_t addr0, uint16_t addr1, uint16_t addr2,
     uip_nd6_prefix_add(&ipv6_address, 64, 0);
 }
 
+void IPv6EtherShield::removeManualAddresses() {
+    register byte i;
+    for (i = 1; i < UIP_CONF_NETIF_MAX_ADDRESSES; i++) {
+        if (uip_netif_physical_if.addresses[i].type == MANUAL) {
+          uip_netif_physical_if.addresses[i].state = NOT_USED;
+        }
+    }
+}
+
 void IPv6EtherShield::receivePacket() {
     uip_len = enc28j60PacketReceive(UIP_BUFSIZE, uip_buf);
 }
