@@ -51,6 +51,8 @@ class IPv6EtherShield
     void sendData(char* data, int len); 
     void closeConnection();
     uint8_t gotAck();
+    void enableWoLInterrupt(void);
+    void disableWoLInterrupt(void);
 };	
 
 #endif
