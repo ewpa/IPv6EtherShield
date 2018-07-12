@@ -44,6 +44,7 @@ class IPv6EtherShield
     void processTCPIP();    
     void pollTimers();
     void tcpListen(uint16_t port);
+    void tcpUnListen(uint16_t port);
     uint8_t newDataAvailable();     
     uint16_t newDataLength();
     char* getNewData();

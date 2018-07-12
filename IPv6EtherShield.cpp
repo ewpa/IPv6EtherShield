@@ -163,6 +163,10 @@ void IPv6EtherShield::tcpListen(uint16_t port) {
     uip_listen(HTONS(port));
 }    
 
+void IPv6EtherShield::tcpUnListen(uint16_t port) {
+    uip_unlisten(HTONS(port));
+}
+
 uint8_t IPv6EtherShield::newDataAvailable() {
     return uip_newdata();
 }    
